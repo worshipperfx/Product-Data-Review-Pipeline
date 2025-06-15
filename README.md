@@ -51,6 +51,7 @@ An error occurred:
 java.lang.ClassNotFoundException: com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem
 This happens because Databricks Community Edition does not support custom JARs — including the required GCS connector.
 
+```
  Workaround
 To maintain the pipeline's integrity:
 
