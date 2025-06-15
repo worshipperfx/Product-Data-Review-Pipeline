@@ -52,37 +52,41 @@ java.lang.ClassNotFoundException: com.google.cloud.hadoop.fs.gcs.GoogleHadoopFil
 This happens because Databricks Community Edition does not support custom JARs — including the required GCS connector.
 
 ```
- Workaround
-To maintain the pipeline's integrity:
 
-Review data was manually downloaded from the GCS bucket.
 
-Files were uploaded to Databricks File System (DBFS).
+  Workaround
+To keep the pipeline functional despite connector limitations in Databricks Community Edition:
 
-Data was then loaded and analyzed in PySpark:
+The review data was manually downloaded from the GCS bucket.
+
+These JSON files were then uploaded to Databricks File System (DBFS).
+
+From there, the data was read and analyzed using PySpark:
 
 
 df = spark.read.json("/FileStore/reviews/")
-While not the original approach, the workaround preserved the pipeline's end-to-end flow and allowed full data analysis.
+Although this wasn't the original plan, the workaround ensured the pipeline ran end-to-end and gave full access to the data for analysis.
 
-Analysis Performed
-Loaded and parsed product reviews
+ Analysis Performed
+Parsed product review JSON files
 
 Grouped reviews by product ID
 
-Calculated average ratings
+Calculated average ratings per product
 
-Identified products with the highest feedback volume
+Identified products with the highest review counts
 
-Used PySpark DataFrame APIs for scalable transformation and aggregation
+Used PySpark DataFrame APIs for efficient transformation and aggregation
 
-Folder Structure
-
-├── publisher.py               # Simulates streaming of product reviews
-├── subscriber.py              # Saves streamed data to GCS
-├── /sample_reviews/           # Sample JSON files from GCS
-├── README.md                  # Project documentation
-⚙ Tech Stack
+ Folder Structure
+bash
+Copy
+Edit
+├── publisher.py          # Simulates streaming of product reviews
+├── subscriber.py         # Saves streamed data to GCS
+├── /sample_reviews/      # Sample JSON files manually uploaded to DBFS
+├── README.md             # Project documentation
+⚙️ Tech Stack
 Python
 
 Google Pub/Sub
@@ -94,24 +98,25 @@ Databricks (Community Edition)
 PySpark
 
  Key Learnings
-Designing and wiring real-time data pipelines using GCP services
+Building real-time data pipelines using Google Cloud tools
 
-Managing service account authentication securely
+Handling authentication and permissions for cloud services
 
-Overcoming connector limitations within Databricks Community Edition
+Working around limitations in managed platforms (e.g., missing JAR support)
 
-Understanding file-based ingestion workflows in DBFS
+Using DBFS for local ingestion and analysis in Databricks
 
-Using PySpark for scalable, cloud-based data analysis
+Applying PySpark for distributed data processing
 
  Use Case
-This pipeline reflects how e-commerce companies or SaaS platforms can stream product feedback, ingest it into cloud storage, and perform near real-time analytics to monitor sentiment, performance, and quality issues.
+This pipeline demonstrates how an e-commerce platform or SaaS company could ingest and analyze product reviews in real-time, helping teams monitor product performance and customer sentiment quickly.
 
  Future Work
-Automate GCS → DBFS ingestion with Databricks REST API
+Automate the GCS → DBFS ingestion with the Databricks REST API
 
-Add Delta Lake for versioned review history
+Add Delta Lake for version control and historical queries
 
-Integrate visualization with Databricks SQL or Google Looker
+Build visual dashboards using Databricks SQL or Google Looker
 
-Add monitoring for Pub/Sub + data freshness
+Add pipeline monitoring to track message flow and data freshness
+
