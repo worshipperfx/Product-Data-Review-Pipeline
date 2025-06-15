@@ -54,20 +54,21 @@ This happens because Databricks Community Edition does not support custom JARs �
 ```
 
 
-  Workaround
+ ## 🔁 Workaround
+
 To keep the pipeline functional despite connector limitations in Databricks Community Edition:
 
-The review data was manually downloaded from the GCS bucket.
+- The review data was manually downloaded from the GCS bucket.
+- These JSON files were then uploaded to **Databricks File System (DBFS)**.
+- From there, the data was read and analyzed using PySpark:
 
-These JSON files were then uploaded to Databricks File System (DBFS).
-
-From there, the data was read and analyzed using PySpark:
-
-
+```python
 df = spark.read.json("/FileStore/reviews/")
+
 Although this wasn't the original plan, the workaround ensured the pipeline ran end-to-end and gave full access to the data for analysis.
 
- Analysis Performed
+Analysis Performed
+
 Parsed product review JSON files
 
 Grouped reviews by product ID
@@ -78,15 +79,13 @@ Identified products with the highest review counts
 
 Used PySpark DataFrame APIs for efficient transformation and aggregation
 
- Folder Structure
-bash
-Copy
-Edit
+Folder Structure
+
 ├── publisher.py          # Simulates streaming of product reviews
 ├── subscriber.py         # Saves streamed data to GCS
 ├── /sample_reviews/      # Sample JSON files manually uploaded to DBFS
 ├── README.md             # Project documentation
-⚙️ Tech Stack
+⚙ Tech Stack
 Python
 
 Google Pub/Sub
@@ -97,7 +96,9 @@ Databricks (Community Edition)
 
 PySpark
 
- Key Learnings
+
+Key Learnings
+
 Building real-time data pipelines using Google Cloud tools
 
 Handling authentication and permissions for cloud services
@@ -108,10 +109,12 @@ Using DBFS for local ingestion and analysis in Databricks
 
 Applying PySpark for distributed data processing
 
- Use Case
+Use Case
+
 This pipeline demonstrates how an e-commerce platform or SaaS company could ingest and analyze product reviews in real-time, helping teams monitor product performance and customer sentiment quickly.
 
- Future Work
+Future Work
+
 Automate the GCS → DBFS ingestion with the Databricks REST API
 
 Add Delta Lake for version control and historical queries
@@ -119,4 +122,10 @@ Add Delta Lake for version control and historical queries
 Build visual dashboards using Databricks SQL or Google Looker
 
 Add pipeline monitoring to track message flow and data freshness
+
+
+
+---
+
+Let me know if you want the full README assembled with these or just this section updated in your w
 
