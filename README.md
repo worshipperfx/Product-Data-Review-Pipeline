@@ -62,7 +62,7 @@ To keep the pipeline functional despite connector limitations in Databricks Comm
 - These JSON files were then uploaded to **Databricks File System (DBFS)**.
 - From there, the data was read and analyzed using PySpark:
 
-```python
+
 df = spark.read.json("/FileStore/reviews/")
 
 Although this wasn't the original plan, the workaround ensured the pipeline ran end-to-end and gave full access to the data for analysis.
