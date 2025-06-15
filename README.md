@@ -54,78 +54,62 @@ This happens because Databricks Community Edition does not support custom JARs �
 ```
 
 
- ## 🔁 Workaround
+## Workaround
 
-To keep the pipeline functional despite connector limitations in Databricks Community Edition:
+While everything was functional, the Databricks Community Edition does not support the required GCS connector JAR (`com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem`). This prevented direct access to `gs://` paths from Databricks.
 
-- The review data was manually downloaded from the GCS bucket.
-- These JSON files were then uploaded to **Databricks File System (DBFS)**.
-- From there, the data was read and analyzed using PySpark:
+After several configuration attempts, a workaround was used to preserve the pipeline:
 
+- Review data was manually downloaded from the GCS bucket.
+- Files were uploaded to the Databricks File System (DBFS).
+- Data was then read and analyzed using PySpark.
 
+```python
 df = spark.read.json("/FileStore/reviews/")
+```
 
-Although this wasn't the original plan, the workaround ensured the pipeline ran end-to-end and gave full access to the data for analysis.
+This wasn't the original plan, but the workaround allowed the pipeline to continue functioning and enabled full analysis of the data.
 
-Analysis Performed
+## Analysis Performed
 
-Parsed product review JSON files
+- Loaded and parsed product review JSON files
+- Grouped reviews by product ID
+- Calculated average product ratings
+- Identified products with the highest number of reviews
+- Used PySpark DataFrame APIs to perform scalable data transformation and aggregation
 
-Grouped reviews by product ID
+## Folder Structure
 
-Calculated average ratings per product
-
-Identified products with the highest review counts
-
-Used PySpark DataFrame APIs for efficient transformation and aggregation
-
-Folder Structure
-
+```
 ├── publisher.py          # Simulates streaming of product reviews
 ├── subscriber.py         # Saves streamed data to GCS
 ├── /sample_reviews/      # Sample JSON files manually uploaded to DBFS
 ├── README.md             # Project documentation
-⚙ Tech Stack
-Python
+```
 
-Google Pub/Sub
+## Tech Stack
 
-Google Cloud Storage (GCS)
+- Python
+- Google Pub/Sub
+- Google Cloud Storage (GCS)
+- Databricks (Community Edition)
+- PySpark
 
-Databricks (Community Edition)
+## Key Learnings
 
-PySpark
+- Designing and wiring real-time data pipelines using Google Cloud services
+- Managing service account authentication and secure access to GCS
+- Working around limitations of cloud platforms like Databricks CE
+- Using DBFS as an alternative file ingestion path
+- Applying PySpark for cloud-scale data analysis
 
+## Use Case
 
-Key Learnings
+This project reflects a common use case for e-commerce or SaaS companies: streaming product feedback into cloud storage and performing near real-time analytics to monitor performance, sentiment, or quality issues.
 
-Building real-time data pipelines using Google Cloud tools
+## Future Work
 
-Handling authentication and permissions for cloud services
-
-Working around limitations in managed platforms (e.g., missing JAR support)
-
-Using DBFS for local ingestion and analysis in Databricks
-
-Applying PySpark for distributed data processing
-
-Use Case
-
-This pipeline demonstrates how an e-commerce platform or SaaS company could ingest and analyze product reviews in real-time, helping teams monitor product performance and customer sentiment quickly.
-
-Future Work
-
-Automate the GCS → DBFS ingestion with the Databricks REST API
-
-Add Delta Lake for version control and historical queries
-
-Build visual dashboards using Databricks SQL or Google Looker
-
-Add pipeline monitoring to track message flow and data freshness
-
-
-
----
-
-Let me know if you want the full README assembled with these or just this section updated in your w
-
+- Automate ingestion from GCS to DBFS using Databricks REST API
+- Introduce Delta Lake for versioned review history and rollback support
+- Add interactive dashboards via Databricks SQL or external BI tools like Google Looker
+- Add monitoring tools for Pub/Sub and end-to-end pipeline freshness
